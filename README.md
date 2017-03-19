@@ -2,7 +2,8 @@
 
 ## Инструкция по установке
 1. Установите библиотеку pyTelegramBotAPI.
-> pip install pyTelegramBotAPI
+> pip install pyTelegramBotAPI<br>
+>[pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
 2. Установите и запустите сервер Apache.
 > http://httpd.apache.org/download
 3. Откройте папку с проектом в браузере.
