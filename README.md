@@ -68,4 +68,4 @@
 
 Далее нужно подтвертить дальнейшие действия по изменению или же наоборот отлонить.
 
-![Подтвердить изменения](/screenshots/comfirmeditschedule.png)
+![Подтвердить изменения](/screenshots/confirmeditschedule.png)
