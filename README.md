@@ -143,3 +143,15 @@
 По завершению квеста одной из комманд админу приходит уведомление
 
 ![Уведомление](/screenshots/adminquest.png)
+
+
+
+
+
+
+>-------------------------------------------------------------------------------------------------------
+# Если возникли какие-либо вопросы
+VK: [shtelzerartem](https://vk.com/shtelzerartem)
+Telegram: [@shtelzerartem](https://t.me/shtelzerartem)
+E-mail: shtirlets@list.ru
+
