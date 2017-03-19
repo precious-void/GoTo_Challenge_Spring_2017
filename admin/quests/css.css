@@ -1,0 +1,35 @@
+.wrap{
+  margin-left: 0;
+  max-width:100%;
+  height:auto;
+  min-height:0px;
+  padding-bottom: 50px;
+}
+.save{
+  display:block;
+  position: relative;
+  margin-top:  30px;
+  bottom:0;
+  background: none;
+}
+.g{
+  border: 3px solid green;
+  border-radius: 5px;
+}
+.r{
+  border: 3px solid red;
+  border-radius: 5px;
+  }
+.delete{
+  position: absolute;
+  color:red;
+  text-decoration: none;
+  right:30px;
+
+}
+.plus{
+  padding:8px;
+  position: absolute;
+  right:15px;
+  bottom:10px;
+}
