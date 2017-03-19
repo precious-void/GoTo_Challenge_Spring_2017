@@ -29,7 +29,11 @@ function checker(){
   }
   if (!is_file('../../bot/members.json')){
       $data='{"members":[]}';
-      file_put_contents("../../bot/members.json",$json_text);
+      file_put_contents("../../bot/members.json",$data);
+  }
+  if (!is_file('../../bot/quest.json')){
+      $data='{"questions":[{"question":"","answer": "", "id": 1}],"activate": "0", "groups":[{"password": "", "users": [], "id": 1, "activequetsion": 1}],"quest": 0}';
+      file_put_contents("../../bot/quest.json",$data);
   }
 }
 function writejson($name,$object){

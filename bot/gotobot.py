@@ -5,24 +5,6 @@ import telebot
 from telebot import types
 import json
 from threading import Timer
-
-
-
-try:
-    file = open('members.json')
-    file2 = open('info.json')
-    file3=open('quest.json')
-except IOError as e:
-    members={"members":[]}
-    info={"adress": "", "admincode": "12345", "usercode": "54321", "schedule": "", "info": "","token":""}
-    quest={"quest":"0"}
-    with open("members.json", "w", encoding="utf-8") as file:
-        json.dump(members, file)
-    with open("info.json", "w", encoding="utf-8") as file:
-        json.dump(info, file)
-    with open("quest.json", "w", encoding="utf-8") as file:
-        json.dump(members, file)
-
 # чтение json файла с данными о участниках
 def readmembers():
     data = json.load(open('members.json', 'r', encoding='utf-8'))
@@ -119,28 +101,27 @@ def eventmessanger():
                     ,parse_mode="HTML",reply_markup=usermarkup)
             quest['activate']="1"
             writequest(quest)
-    schedule = schedulizer(data)
-    localtime = int(tm.localtime()[3] * 60 + tm.localtime()[4])
-    if localtime==8*60:
-        for j in range(len(members)):
-            bot.send_message(int(members[j]['id']), schedule,parse_mode="HTML")
-    data = data.split("\n")
-    times = data
-
-
-    for i in range(len(times)):
-        times[i] = times[i][:5]
-        times[i] = int(times[i].split(":")[0]) * 60 + int(times[i].split(":")[1])
-    for i in range(len(times)):
-        if localtime == times[i]:
-            data = readinfo()['schedule']
-            data = data.split("\n")
-            text=data[i]
+    if data!='':
+        schedule = schedulizer(data)
+        localtime = int(tm.localtime()[3] * 60 + tm.localtime()[4])
+        if localtime==8*60:
             for j in range(len(members)):
-                bot.send_message(int(members[j]['id']), "<b>"+text[:5]+"</b>"+text[5:],parse_mode="HTML")
-            break
-    interval=Timer(59.0, eventmessanger)
-    interval.start()
+                bot.send_message(int(members[j]['id']), schedule,parse_mode="HTML")
+        data = data.split("\n")
+        times = data
+        for i in range(len(times)):
+            times[i] = times[i][:5]
+            times[i] = int(times[i].split(":")[0]) * 60 + int(times[i].split(":")[1])
+        for i in range(len(times)):
+            if localtime == times[i]:
+                data = readinfo()['schedule']
+                data = data.split("\n")
+                text=data[i]
+                for j in range(len(members)):
+                    bot.send_message(int(members[j]['id']), "<b>"+text[:5]+"</b>"+text[5:],parse_mode="HTML")
+                break
+        interval=Timer(59.0, eventmessanger)
+        interval.start()
 eventmessanger()
 
 @bot.message_handler(commands=["start"])

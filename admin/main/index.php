@@ -25,9 +25,9 @@ openwrap();
 leftcol(1);
 rightcolop();
 ?>
-<iframe name="iframe1" style="display:none"></iframe>
+<iframe name="iframe" style="display:none"></iframe>
 
-<form method="POST" target="iframe1" id="form">
+<form method="POST" target="iframe" id="form">
         <div class="row post">
 
         <div class="col-md-3 green">
