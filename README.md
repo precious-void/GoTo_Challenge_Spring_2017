@@ -21,6 +21,7 @@
 Он запросит пароль, введенный вами в веб-сервисе
 > *admin* (Пароль для админа)<br>
 > *user* (Пароль для юзера)
+
 Регистрация администратора | Регистрация юзера
 ------------ | -------------
-![Регистрация админа](/screenshots/registeradmin.png)|![Регистрация юзера](/screenshots/registeruser.png)
+![Регистрация админа](/screenshots/registeradmin.PNG)|![Регистрация юзера](/screenshots/registeruser.PNG)
