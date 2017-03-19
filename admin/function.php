@@ -35,6 +35,11 @@ function checker(){
       $data='{"questions":[{"question":"","answer": "", "id": 1}],"activate": "0", "groups":[{"password": "", "users": [], "id": 1, "activequetsion": 1}],"quest": 0}';
       file_put_contents("../../bot/quest.json",$data);
   }
+  if (!is_file('../../bot/achives.json')){
+      $data='{"deleteachive":[],"addition":[]}';
+      file_put_contents("../../bot/achives.json",$data);
+  }
+
 }
 function writejson($name,$object){
   $json_text = json_encode($object);

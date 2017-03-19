@@ -16,7 +16,6 @@ header('Content-type: text/html; charset=UTF-8');
     <link rel="stylesheet" href="../css/admin.css"/>
     <link rel="stylesheet" href="css.css"/>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/script.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
 </head>
 <script>
@@ -178,6 +177,7 @@ if (isset($_POST['stop'])){
 if (isset($_POST['start'])){
   $quest=readjson('quest.json');
   $quest->{'quest'}=0;
+  $quest->{'activate'}=0;
   writejson('quest.json',$quest);
 }
     rightcolcl();

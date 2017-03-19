@@ -15,7 +15,6 @@ header('Content-type: text/html; charset=UTF-8');
     <link rel="stylesheet" href="../fonts/ubuntu.css"/>
     <link rel="stylesheet" href="../css/admin.css"/>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/script.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
 </head>
 <body>

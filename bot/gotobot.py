@@ -35,6 +35,15 @@ def writequest(text):
     with open("quest.json", "w", encoding="utf-8") as file:
         json.dump(text, file)
 
+def writeachives(text):
+    with open("achives.json", "w", encoding="utf-8") as file:
+        json.dump(text, file)
+
+def readachives():
+    data = json.load(open('achives.json', 'r', encoding='utf-8'))
+    return data
+
+
 #узнаем токен нашего бота
 bot = telebot.TeleBot(readinfo()['token'])
 
@@ -77,7 +86,7 @@ adminmarkup.row('🛠 Комманды', '🔒 Админка')
 # Админка
 adminkamarkup = types.ReplyKeyboardMarkup(True, False)
 adminkamarkup.row('📆 Расписание', '🎖 Ачивки')
-adminkamarkup.row('🏠 Где я живу?', '📞 Телефоны')
+adminkamarkup.row('🏠 Где я живу?', '📞 Контакты')
 adminkamarkup.row('✉️ Срочное сообщение')
 adminkamarkup.row('❌ Выход')
 #Убрать клаву
@@ -207,10 +216,20 @@ def handle_help(message):
         start(message)
     elif auth[0] == 1:
         bot.send_message(message.chat.id,
-                         "🗓 Расписание, /schedule - полное расписание на день\n⛳️ Событие, /event - «Что и где сейчас?»\n❗️ Информация, /info - «Где я живу?», номера телефонов\n🛠 Комманды, /help - описание комманд бота.")
+                         "🗓 Расписание, /schedule - полное расписание на день.\n⛳️ Событие, /event - «Что и где сейчас?».\n❗️ Информация, /info - «Где я живу?», номера телефонов.\n🛠 Комманды, /help - описание комманд бота.")
     elif auth[0] == 2:
         bot.send_message(message.chat.id,
-                         "🗓 Расписание, /schedule - полное расписание на день\n⛳️ Событие, /event - «Что и где сейчас?»\n❗️ Информация, /info - «Где я живу?», номера телефонов\n🛠 Комманды, /help - описание комманд бота\n\n🔒 Админка, /admin - административная система,\n📆 Расписание, /editschedule - изменение расписания,\n🏠 Где я живу?, /editadress - изменение информации о местах жительства,\n📞 Телефоны, /editphones - изменение измормации о контактных телефонах,\n✉️ Срочное сообщение, /quickmessage - рассылка срочных сообщений,\n❌ Выход, /exit - выход из административного режима.")
+                         "🔒 Админка, /admin - административная система\n"
+                         "🗓 Расписание, /schedule - полное расписание на день.\n"
+                         "Для изменения расписания 📆 Расписание, /editschedule \n"
+                         "⛳️ Событие, /event - «Что и где сейчас?»\n"
+                         "❗️ Информация, /info - «Где я живу?», номера телефонов\n"
+                         "Для изменения информации о проживании 🏠 Где я живу?, /editadress.\n"
+                         "Для изменения контактной информации 📞 Контакты, /editphones\n"
+                         "🛠 Комманды, /help - описание комманд бота\n"
+                         "✉️ Срочное сообщение, /quickmessage - рассылка срочных сообщений\n"
+                         "❌ Выход, /exit - выход из административного режима.")
+
 
 
 # Запрашиваем расписание
@@ -281,25 +300,64 @@ def achives(message):
             for i in range(len(achives)):
                 new.append(achives[i]['name'] + "\n")
             new.reverse()
-            stroke = ''
+            stroke = '<b>Твои ачивки</b>\n\n'
             for i in range(1, len(new) + 1):
-                stroke += str(i - 1) + ". " + str(new[i - 1])
-            bot.send_message(message.chat.id, stroke)
+                stroke += str(i) + ". " + str(new[i - 1])
+            bot.send_message(message.chat.id, stroke,parse_mode="HTML")
         else:
             bot.send_message(message.chat.id, "<b>У тебя пока нет ачивок.</b>", parse_mode="HTML")
             bot.send_sticker(message.chat.id, "CAADBAADcAcAAhXc8gJyeBay5IC2QAI")
     else:
         start(message)
+def deletelog(message):
+    data = readmembers()['members']
+    stroke = ''
+    number=int(message.text)
+    if number>=1 and number<=len(data):
+        for i in range(1, len(data) + 1):
+            if i==number:
+                stroke = 'Введите номер ачивки, которую надо удалить.\n<b>Пользователь: </b>'+data[i - 1]['name']+"\n\n"
+                for j in range(len(data[i - 1]['achives'])):
+                    stroke += str(j+1) + ". " + str(data[i - 1]['achives'][j]['name']) + "\n"
+                send=bot.send_message(message.chat.id,stroke,parse_mode="HTML")
+                achives=readachives()
+                achives['deleteachive'].append({"iduser":int(data[i - 1]['id'])})
+                writeachives(achives)
+                bot.register_next_step_handler(send,decision)
+    else:
+        send=bot.send_message(message.chat.id,"Неправильно введен номер пользователя или пользователя с таким номером не существует! Введите заново.")
+        bot.register_next_step_handler(send,deletelog)
 
+def decision(message):
+    achives=readachives()['deleteachive']
+    members=readmembers()['members']
+    #try:
+    for i in range(len(members)):
+        for j in range(len(achives)):
+            if int(members[i]['id'])==achives[j]['iduser']:
+                bot.send_message(message.chat.id,
+                                 "<b>Удалена ачивка!\n"
+                                 "Пользователь:</b>"+members[i]['name']+
+                                 "\n<b>Название ачивки:</b>"+members[i]['achives'][int(message.text)-1]['name'],parse_mode="HTML")
+                del members[i]['achives'][int(message.text)-1]
+                del achives[j]
+                writeachives({'deleteachive': achives})
+                writemembers({'members':members})
+                break
+    #except IndexError:
+    #    send=bot.send_message(message.chat.id, "Нет ачивки с таким номером введи заново!")
+    #    bot.register_next_step_handler(send,decision)
 
-# Рассказываем ему нужную (нет) информацию
+def addition(message):
+    print('sd')
+#Рассказываем ему нужную (нет) информацию
 @bot.message_handler(func=lambda message: message.text == "❗️ Информация" or message.text == "/info")
 def handle_info(message):
     auth = checker(message)
-    if auth[0] != 0:
+    if auth[0]!=0:
         markup = types.InlineKeyboardMarkup()
         whereilive = types.InlineKeyboardButton(text='🏡 Где я живу?', callback_data='whereilive')
-        phones = types.InlineKeyboardButton(text='☎️ Телефоны', callback_data='phones')
+        phones = types.InlineKeyboardButton(text='☎️ Контакты', callback_data='phones')
         markup.add(whereilive, phones)
         bot.send_message(message.chat.id, "Выбери вариант:", reply_markup=markup)
     else:
@@ -374,13 +432,14 @@ def newadress(message):
     data = readinfo()
     data['adress'] = str(message.text)
     writeinfo(data)
+    data=readmembers()
     for i in range(len(data['members'])):
         if str(data['members'][i]['id']) != str(message.chat.id):
             bot.send_message(int(data['members'][i]['id']), "<b>Новое расписание!</b>\n" + str(message.text),parse_mode="HTML")
     bot.send_message(message.chat.id, "<b>Информация о проживании обновлена!</b>", parse_mode="HTML")
 
 
-@bot.message_handler(func=lambda message: message.text == "📞 Телефоны" or message.text == "/editphones")
+@bot.message_handler(func=lambda message: message.text == "📞 Контакты" or message.text == "/editphones")
 def editphones(message):
     auth = checker(message)
     if auth[0] != 0:
@@ -439,10 +498,10 @@ def handle_editachives(message):
             cancel = types.InlineKeyboardMarkup(row_width=3)
             can = types.InlineKeyboardButton(text='❌ Отмена', callback_data='continue')
             sub = types.InlineKeyboardButton(text='🏆 Выдать ачивку', callback_data='giveachive')
-            # delete=types.InlineKeyboardButton(text='♻️ Удалить ачивку', callback_data='deleteachive')
+            delete=types.InlineKeyboardButton(text='♻️ Удалить ачивку', callback_data='deleteachive')
             cancel.add(can)
             cancel.add(sub)
-            # cancel.add(delete)
+            cancel.add(delete)
             bot.send_message(message.chat.id, "<b>Выберите действие:</b>", parse_mode="HTML", reply_markup=cancel)
         else:
             bot.send_sticker(message.chat.id, "CAADAgADQQoAApkvSwqnrw2BEeUQJwI")
@@ -451,27 +510,33 @@ def handle_editachives(message):
 
 
 def giveachive(message):
-    text = message.text.split(" ")
-    text[1] = " ".join(text[1:])
-    if text[0][-1] == ".":
-        text[0] = text[0].replace(".", "")
-    if text[0].isdigit() == True:
+    try:
         data = readmembers()
-        data['members'][int(text[0])]['achives'].append({"name": str(text[1]), "adding": ""})
-        markup = types.InlineKeyboardMarkup(row_width=2)
-        add = types.InlineKeyboardButton(text='📎 Добавить файл', callback_data='addition')
-        fin = types.InlineKeyboardButton(text='🎗 Выдать ачивку!', callback_data='giveaway')
-        markup.add(add, fin)
-        writemembers(data)
-        bot.send_message(message.chat.id,
-                         "<b>Ачивка выдается пользователю с именем: </b>" + str(
-                             data['members'][int(text[0])]['name']) + "\n<b>Название ачивки: </b>" + str(text[1])
-                         , parse_mode="HTML", reply_markup=markup)
-    else:
-        a = bot.send_message(message.chat.id, "<b>Введено в неправильном формате!\n\nПример:</b>\n1. За храбрость!",
-                             parse_mode="HTML")
-        bot.register_next_step_handler(a, giveachive)
+        text = message.text.split(" ")
+        number=int(text[0])
+        del text[0]
+        text = " ".join(text)
+        if number>0 and number<=len(data) and text!='':
+                data['members'][int(number)-1]['achives'].append({"name": str(text), "adding": ""})
+                markup = types.InlineKeyboardMarkup(row_width=2)
+                #add = types.InlineKeyboardButton(text='📎 Добавить файл', callback_data='addition')
+                fin = types.InlineKeyboardButton(text='🎗 Выдать ачивку!', callback_data='giveaway')
+                #markup.add(add)
+                markup.add(fin)
+                writemembers(data)
+                bot.send_message(message.chat.id,
+                                 "<b>Ачивка выдается пользователю с именем: </b>" + str(
+                                     data['members'][int(number)-1]['name']) + "\n<b>Название ачивки: </b>" + str(text)
+                                 , parse_mode="HTML", reply_markup=markup)
+        else:
+            send = bot.send_message(message.chat.id,
+                                    "<b>Неправильный формат ввода!</b>\n\n<i>Пример:</i>\n1 Не ел вторую неделю?",
+                                    parse_mode="HTML")
+            bot.register_next_step_handler(send, giveachive)
 
+    except IndexError:
+        send=bot.send_message(message.chat.id,"<b>Неправильный формат ввода!</b>\n\n<i>Пример:</i>\n1 Не ел вторую неделю?",parse_mode="HTML")
+        bot.register_next_step_handler(send,giveachive)
 
 @bot.message_handler(func=lambda message: message.text == "❌ Выход" or message.text == "/exit")
 def exit(message):
@@ -627,11 +692,22 @@ def inline(message):
         stroke = ''
         for i in range(1, len(data) + 1):
             if str(data[i - 1]['id']) != message.message.chat.id:
-                stroke += str(i - 1) + ". " + str(data[i - 1]['name'])+"\n"
+                stroke += str(i) + ". " + str(data[i - 1]['name'])+"\n"
         add = bot.edit_message_text(chat_id=message.message.chat.id, message_id=message.message.message_id,
                                     text="<b>Введи номер пользователя, которому ты хочешь выдать ачивку и название ачивки через пробел. </b>\n\n"
                                          + str(stroke), parse_mode="HTML")
         bot.register_next_step_handler(add, giveachive)
+
+    elif message.data == 'deleteachive':
+        data = readmembers()['members']
+        stroke = ''
+        for i in range(1, len(data) + 1):
+            if str(data[i - 1]['id']) != message.message.chat.id:
+                stroke += str(i) + ". " + str(data[i - 1]['name']) + "\n"
+                add = bot.edit_message_text(chat_id=message.message.chat.id, message_id=message.message.message_id,
+                                    text="<b>Введи номер пользователя, у которого ты хочешь удалить ачивку!</b>\n\n"
+                                         + str(stroke), parse_mode="HTML")
+                bot.register_next_step_handler(add, deletelog)
 
     elif message.data == "giveaway":
         text = message.message.text[38:].split("\n")[0]
@@ -645,7 +721,9 @@ def inline(message):
                 bot.edit_message_text(chat_id=message.message.chat.id, message_id=message.message.message_id,
                                       text="<b>Ты выдал ачивку!</b>",
                                       parse_mode="HTML")
-
+    elif message.data == "addition":
+        send=bot.send_message(message.message.id,"Пришли файл/стикер/аудиозапись/фото")
+        bot.register_next_step_handler(send,addition)
 
 # Бесконечность не предел!
 if __name__ == '__main__':
