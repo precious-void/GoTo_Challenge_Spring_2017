@@ -1,12 +1,4 @@
 # GoTo_Challenge_Spring_2017
-## Веб-сервис и сам бот
-В данный момент веб-сервис размещен по адресу [shtirlets.beget.tech](shtirlets.beget.tech)
-
-Логин: **goto**
-
-Пароль: **school**<br>
-Ник бота в telegram:[@gotoschool_bot](https://t.me/gotoschool_bot)<br>
-Пароль для админа в боте - **admin**, для юзера - **user**
 
 ## Инструкция по установке
 1. Установите библиотеку для Python - pyTelegramBotAPI.
