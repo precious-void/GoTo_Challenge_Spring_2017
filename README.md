@@ -1,6 +1,6 @@
 # GoTo_Challenge_Spring_2017
 ## Веб-сервис и сам бот
-В данный момент веб-сервис размещен по адресу [shtirlets.beget.tech](shtirlets.beget.tech).
+В данный момент веб-сервис размещен по адресу [shtirlets.beget.tech](http://shtirlets.beget.tech).
 
 Ник бота в telegram: [@gotoschool_bot](https://t.me/gotoschool_bot)<br>
   
